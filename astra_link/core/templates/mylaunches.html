@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Followed Launches</title>
+</head>
+<body>
+
+    <a href="{% url 'index' %}">Back to launches</a>
+
+    <h1>My Followed Launches</h1>
+
+    {% if launches %}
+        <ul>
+            {% for launch in launches %}
+                <li>
+                    <a href="{% url 'launch_detail' launch.id %}">
+                        {{ launch.name }} — {{ launch.net }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not following any launches yet.</p>
+    {% endif %}
+
+</body>
+</html>

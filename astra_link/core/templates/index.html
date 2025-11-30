@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AstraLink – Upcoming Launches</title>
+</head>
+<body>
+    <p>
+    <a href="{% url 'my_launches' %}">My Launches</a>
+</p>
+
+    <h1>Upcoming Launches</h1>
+
+    <ul>
+        {% for launch in launches %}
+            <li>
+                <a href="{% url 'launch_detail' launch.id %}">
+                    {{ launch.name }} – {{ launch.net }}
+                </a>
+            </li>
+
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ launch.name }}</title>
+</head>
+<body>
+
+    <a href="{% url 'index' %}">Back to launches</a>
+
+    <h1>{{ launch.name }}</h1>
+    <p><strong>Date:</strong> {{ launch.net }}</p>
+
+    {% if launch.rocket_name %}
+        <p><strong>Rocket:</strong> {{ launch.rocket_name }}</p>
+    {% endif %}
+
+    {% if launch.provider %}
+        <p><strong>Provider:</strong> {{ launch.provider }}</p>
+    {% endif %}
+
+    {% if launch.pad_name %}
+        <p><strong>Launch pad:</strong> {{ launch.pad_name }}</p>
+    {% endif %}
+
+    {% if launch.mission_description %}
+        <p><strong>Mission:</strong> {{ launch.mission_description }}</p>
+    {% endif %}
+
+    {% if launch.image_url %}
+        <img src="{{ launch.image_url }}" alt="Launch image" width="400">
+    {% endif %}
+    {% if user.is_authenticated %}
+
+    {% if is_following %}
+        <form action="{% url 'unfollow_launch' launch.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Unfollow</button>
+        </form>
+    {% else %}
+        <form action="{% url 'follow_launch' launch.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Follow</button>
+        </form>
+    {% endif %}
+
+{% else %}
+    <p>
+        <a href="/login/">Log in</a> to follow this launch.
+    </p>
+{% endif %}
+</body>
+</html>
