@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Followed Launches</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <a href="{% url 'index' %}">Back to launches</a>
+{% block title %}My Launches – AstraLink{% endblock %}
 
-    <h1>My Followed Launches</h1>
+{% block content %}
+<h1 class="text-2xl title-font text-cyan-400 mb-4">My Launches</h1>
 
-    {% if launches %}
-        <ul>
-            {% for launch in launches %}
-                <li>
-                    <a href="{% url 'launch_detail' launch.id %}">
-                        {{ launch.name }} — {{ launch.net }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You are not following any launches yet.</p>
-    {% endif %}
-
-</body>
-</html>
+{% if launches %}
+    <div class="space-y-2">
+        {% for launch in launches %}
+            <a href="{% url 'launch_detail' launch.id %}"
+               class="block p-4 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                <p class="text-lg font-semibold">{{ launch.name }}</p>
+                <p class="text-sm text-gray-400">{{ launch.net }}</p>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-gray-400">You are not following any launches yet.</p>
+{% endif %}
+{% endblock %}

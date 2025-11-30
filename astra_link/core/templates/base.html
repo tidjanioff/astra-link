@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}AstraLink{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}"></script>
+
+</head>
+<body class="min-h-screen">
+
+    <nav class="p-4 bg-black/30 backdrop-blur-sm flex items-center justify-between">
+        <a href="{% url 'index' %}" class="title-font text-xl text-cyan-400">AstraLink</a>
+
+        <div class="flex items-center space-x-4">
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_launches' %}" class="text-white hover:text-cyan-400">My Launches</a>
+                <a href="/logout/" class="text-white hover:text-cyan-400">Logout</a>
+            {% else %}
+                <a href="/login/" class="text-white hover:text-cyan-400">Login</a>
+            {% endif %}
+
+        </div>
+    </nav>
+
+    <main class="p-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

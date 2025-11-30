@@ -1,52 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ launch.name }}</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <a href="{% url 'index' %}">Back to launches</a>
+{% block title %}{{ launch.name }} – AstraLink{% endblock %}
 
-    <h1>{{ launch.name }}</h1>
-    <p><strong>Date:</strong> {{ launch.net }}</p>
+{% block content %}
+
+<div class="max-w-2xl mx-auto space-y-6">
+
+    <h1 class="text-2xl title-font text-cyan-400">{{ launch.name }}</h1>
+    
+<div id="countdown"
+     data-launch-date="{{ launch.net|date:'c' }}"
+     class="font-orbitron text-xl text-cyan-400">
+</div>
+
+    {% if launch.image_url %}
+        <img src="{{ launch.image_url }}" class="rounded-lg shadow-lg">
+    {% endif %}
+
+    <p class="text-gray-300"><strong>Date:</strong> {{ launch.net }}</p>
 
     {% if launch.rocket_name %}
-        <p><strong>Rocket:</strong> {{ launch.rocket_name }}</p>
-    {% endif %}
-
-    {% if launch.provider %}
-        <p><strong>Provider:</strong> {{ launch.provider }}</p>
-    {% endif %}
-
-    {% if launch.pad_name %}
-        <p><strong>Launch pad:</strong> {{ launch.pad_name }}</p>
+        <p class="text-gray-300"><strong>Rocket:</strong> {{ launch.rocket_name }}</p>
     {% endif %}
 
     {% if launch.mission_description %}
-        <p><strong>Mission:</strong> {{ launch.mission_description }}</p>
+        <p class="text-gray-300"><strong>Mission:</strong> {{ launch.mission_description }}</p>
     {% endif %}
 
-    {% if launch.image_url %}
-        <img src="{{ launch.image_url }}" alt="Launch image" width="400">
-    {% endif %}
-    {% if user.is_authenticated %}
+    <div>
+        {% if user.is_authenticated %}
+            {% if is_following %}
+                <form action="{% url 'unfollow_launch' launch.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="px-4 py-2 bg-red-600 rounded-lg">Unfollow</button>
+                </form>
+            {% else %}
+                <form action="{% url 'follow_launch' launch.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="px-4 py-2 bg-cyan-600 rounded-lg">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
 
-    {% if is_following %}
-        <form action="{% url 'unfollow_launch' launch.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Unfollow</button>
-        </form>
-    {% else %}
-        <form action="{% url 'follow_launch' launch.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Follow</button>
-        </form>
-    {% endif %}
+</div>
 
-{% else %}
-    <p>
-        <a href="/login/">Log in</a> to follow this launch.
-    </p>
-{% endif %}
-</body>
-</html>
+{% endblock %}

@@ -1,24 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AstraLink – Upcoming Launches</title>
-</head>
-<body>
-    <p>
-    <a href="{% url 'my_launches' %}">My Launches</a>
-</p>
+{% extends "base.html" %}
 
-    <h1>Upcoming Launches</h1>
+{% block title %}Upcoming Launches – AstraLink{% endblock %}
 
-    <ul>
-        {% for launch in launches %}
-            <li>
-                <a href="{% url 'launch_detail' launch.id %}">
-                    {{ launch.name }} – {{ launch.net }}
-                </a>
-            </li>
+{% block content %}
+<h1 class="text-2xl title-font text-cyan-400 mb-4">Upcoming Launches</h1>
 
-        {% endfor %}
-    </ul>
-</body>
-</html>
+<div class="space-y-2">
+
+    {% for launch in launches %}
+        <a href="{% url 'launch_detail' launch.id %}"
+           class="block p-4 bg-white/5 rounded-lg hover:bg-white/10 transition">
+
+            <p class="text-lg font-semibold">{{ launch.name }}</p>
+            <p class="text-sm text-gray-400">{{ launch.net }}</p>
+
+        </a>
+    {% endfor %}
+
+</div>
+{% endblock %}
