@@ -76,64 +76,133 @@
     </div>
 
 
-    <div class="grid sm:grid-cols-2 gap-6 bg-white/5 p-6 rounded-xl 
-                backdrop-blur border border-white/10 shadow-xl shadow-black/20">
 
-        <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-cyan-300 mb-1">Mission Info</h2>
+    <div class="grid sm:grid-cols-2 gap-6 
+bg-[rgba(10,15,47,0.6)] p-6 rounded-2xl 
+backdrop-blur border border-white/10 
+shadow-lg shadow-black/30 transition">
+
+        <div class="space-y-3">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2 tracking-wide flex items-center gap-2">
+
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 text-cyan-300" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M5 16l7-7 7 7M12 9v13" />
+                </svg>
+
+                Mission Info
+            </h2>
 
             {% if launch.mission_name %}
-            <p><span class="font-semibold text-gray-300">Mission:</span> {{ launch.mission_name }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Mission</p>
+                <p class="text-gray-200 font-medium">{{ launch.mission_name }}</p>
+            </div>
             {% endif %}
 
             {% if launch.rocket_name %}
-            <p><span class="font-semibold text-gray-300">Launch Vehicle:</span> {{ launch.rocket_name }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Launch Vehicle</p>
+                <p class="text-gray-200 font-medium">{{ launch.rocket_name }}</p>
+            </div>
             {% endif %}
 
             {% if launch.provider %}
-            <p><span class="font-semibold text-gray-300">Provider:</span> {{ launch.provider }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Provider</p>
+                <p class="text-gray-200 font-medium">{{ launch.provider }}</p>
+            </div>
             {% endif %}
 
             {% if launch.status %}
-            <p><span class="font-semibold text-gray-300">Status:</span> {{ launch.status }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Status</p>
+                <p class="text-gray-200 font-medium">{{ launch.status }}</p>
+            </div>
             {% endif %}
         </div>
 
-        <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-cyan-300 mb-1">Launch Pad</h2>
+
+
+        <div class="space-y-3">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2 tracking-wide flex items-center gap-2">
+
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 text-cyan-300" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z" />
+                </svg>
+
+                Launch Pad
+            </h2>
 
             {% if launch.pad_name %}
-            <p><span class="font-semibold text-gray-300">Pad:</span> {{ launch.pad_name }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Pad</p>
+                <p class="text-gray-200 font-medium">{{ launch.pad_name }}</p>
+            </div>
             {% endif %}
 
             {% if launch.location_name %}
-            <p><span class="font-semibold text-gray-300">Location:</span> {{ launch.location_name }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Location</p>
+                <p class="text-gray-200 font-medium">{{ launch.location_name }}</p>
+            </div>
             {% endif %}
 
             {% if launch.window_start %}
-            <p><span class="font-semibold text-gray-300">Window Start:</span> {{ launch.window_start }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Window Start</p>
+                <p class="text-gray-200 font-medium">{{ launch.window_start }}</p>
+            </div>
             {% endif %}
 
             {% if launch.window_end %}
-            <p><span class="font-semibold text-gray-300">Window End:</span> {{ launch.window_end }}</p>
+            <div>
+                <p class="text-gray-400 text-sm">Window End</p>
+                <p class="text-gray-200 font-medium">{{ launch.window_end }}</p>
+            </div>
             {% endif %}
         </div>
 
     </div>
 
 
+
     {% if launch.mission_description %}
-    <div class="mt-8 bg-white/5 p-6 rounded-xl 
-                backdrop-blur border border-white/10 shadow-xl shadow-black/20">
-        <h2 class="text-xl font-semibold text-cyan-300 mb-2">Mission Description</h2>
-        <p class="text-gray-300 leading-relaxed">
+    <div class="mt-10 p-6 rounded-2xl 
+                backdrop-blur border border-white/10 
+                shadow-lg shadow-black/30 bg-[rgba(10,15,47,0.6)]">
+
+        <h2 class="text-xl font-bold text-cyan-300 mb-3 tracking-wide flex items-center gap-2">
+
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="h-5 w-5 text-cyan-300" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M7 3h8l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M14 3v5h5" />
+            </svg>
+
+            Mission Description
+        </h2>
+
+        <p class="text-gray-300 leading-relaxed text-[15px]">
             {{ launch.mission_description }}
         </p>
     </div>
     {% endif %}
 
 
+
     <div class="mt-8 flex flex-wrap gap-4 justify-center">
+
         {% if launch.info_url %}
         <a href="{{ launch.info_url }}" target="_blank"
            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-sm shadow-lg">
@@ -150,26 +219,37 @@
     </div>
 
 
+
     <div class="mt-12 text-center">
         {% if user.is_authenticated %}
+
             {% if is_following %}
-                <a href="{% url 'unfollow_launch' launch.id %}"
-                   class="px-6 py-2 w-full max-w-xs mx-auto block
-                          bg-red-600 hover:bg-red-700 rounded-lg 
-                          text-white text-sm shadow-lg transition">
-                    Unfollow
-                </a>
+            <a href="{% url 'unfollow_launch' launch.id %}"
+               class="px-6 py-2 w-full max-w-xs mx-auto block
+                      bg-red-600 hover:bg-red-500
+                      text-white text-sm font-semibold
+                      rounded-lg transition-all duration-300
+                      shadow-[0_0_12px_rgba(255,0,0,0.35)]
+                      border border-red-500/40 hover:shadow-[0_0_18px_rgba(255,0,0,0.5)]">
+                Unfollow
+            </a>
+
             {% else %}
-                <a href="{% url 'follow_launch' launch.id %}"
-                   class="px-6 py-2 w-full max-w-xs mx-auto block
-                          bg-cyan-600 hover:bg-cyan-700 rounded-lg 
-                          text-white text-sm shadow-lg transition">
-                    Follow
-                </a>
+            <a href="{% url 'follow_launch' launch.id %}"
+               class="px-6 py-2 w-full max-w-xs mx-auto block
+                      bg-cyan-600 hover:bg-cyan-500
+                      text-white text-sm font-semibold
+                      rounded-lg transition-all duration-300
+                      shadow-[0_0_12px_rgba(0,255,255,0.35)]
+                      border border-cyan-500/40 hover:shadow-[0_0_18px_rgba(0,255,255,0.55)]">
+                Follow
+            </a>
             {% endif %}
+
         {% else %}
             <p class="text-gray-400 text-sm">
-                <a href="{% url 'login' %}" class="text-cyan-400 underline">Login</a> to follow this launch.
+                <a href="{% url 'login' %}" class="text-cyan-400 underline">Login</a>
+                to follow this launch.
             </p>
         {% endif %}
     </div>

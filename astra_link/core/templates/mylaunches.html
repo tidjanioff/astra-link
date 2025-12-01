@@ -6,14 +6,19 @@
 
 
 <div class="max-w-5xl mx-auto px-4 mt-6 mb-6">
-    <h1 class="text-2xl font-orbitron text-cyan-400">My Launches</h1>
+    <h1 class="text-2xl font-bold text-cyan-400 mb-5">My Launches</h1>
 </div>
 
 {% if launches %}
 <div class="max-w-5xl mx-auto px-4 pb-12">
 
-    <p id="follow-counter" class="text-slate-400 text-sm mb-6">
-    You are following {{ launches|length }} launches 🚀
+<p id="follow-counter" class="text-slate-400 text-sm mb-6">
+    You are following 
+    <span class="text-cyan-300 font-semibold font-mono 
+                 drop-shadow-[0_0_6px_rgba(0,255,255,0.8)]">
+        {{ launches|length }}
+    </span> 
+    launches 🚀
 </p>
 
     <div class="grid gap-5 sm:grid-cols-2">
@@ -44,9 +49,11 @@
 
                     <button data-launch-id="{{ launch.id }}"
                             data-follow-btn
-                            class="px-3 py-1 text-xs rounded-md
-                                   bg-red-600/80 hover:bg-red-700 text-white
-                                   transition duration-300">
+                            class="px-3 py-1 text-xs rounded-full whitespace-nowrap
+bg-red-500 text-white font-semibold
+shadow-[0_0_8px_rgba(255,0,0,0.5)]
+hover:bg-red-400 hover:shadow-[0_0_12px_rgba(255,0,0,0.8)]
+transition duration-300">
                         Unfollow
                     </button>
                 </div>
