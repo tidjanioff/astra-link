@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Launch, FollowedLaunch
@@ -50,3 +51,15 @@ def followed_launches(request):
     launches = [f.launch for f in followed]
 
     return render(request, "mylaunches.html", {"launches": launches})
+
+@login_required
+def api_follow(request, launch_id):
+    launch = Launch.objects.get(id=launch_id)
+    FollowedLaunch.objects.get_or_create(user=request.user, launch=launch)
+    return JsonResponse({"status": "followed"})
+
+@login_required
+def api_unfollow(request, launch_id):
+    launch = Launch.objects.get(id=launch_id)
+    FollowedLaunch.objects.filter(user=request.user, launch=launch).delete()
+    return JsonResponse({"status": "unfollowed"})
