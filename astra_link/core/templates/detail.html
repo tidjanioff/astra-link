@@ -4,19 +4,20 @@
 {% block content %}
 
 <div class="w-full mb-8">
-    <div class="relative w-full h-[280px] sm:h-[340px] md:h-[420px] mb-8 overflow-hidden rounded-xl">
+    <div class="relative w-full h-[260px] sm:h-[330px] md:h-[420px] overflow-hidden rounded-none">
 
         <img src="{{ launch.image_url }}"
              class="w-full h-full object-cover brightness-[0.85]">
 
-        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent"></div>
 
-        <div class="absolute left-6 bottom-6 sm:bottom-8 space-y-1">
-            <h1 class="text-3xl sm:text-4xl font-bold text-white">
+        <div class="absolute bottom-5 sm:bottom-8 left-5 right-5">
+            <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight drop-shadow">
                 {{ launch.name }}
             </h1>
+
             {% if launch.rocket_name %}
-            <p class="text-sm text-gray-300">
+            <p class="text-sm text-gray-300 mt-1">
                 {{ launch.rocket_name }}
             </p>
             {% endif %}
@@ -26,56 +27,60 @@
 </div>
 
 
-<div class="max-w-5xl mx-auto px-4 pb-12">
+<div class="max-w-5xl mx-auto px-4 pb-14">
 
     <div class="text-center mb-10">
-    <div id="countdown"
-         data-launch-date="{{ launch.net|date:'c' }}"
-         class="flex justify-center gap-4 font-orbitron">
+        <div id="countdown"
+             data-launch-date="{{ launch.net|date:'c' }}"
+             class="flex justify-center gap-4 sm:gap-6 font-orbitron">
 
-        <div class="flex flex-col items-center">
-            <span id="cd-days" class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
-                                     px-4 py-2 rounded-lg shadow-lg border border-cyan-500/20">
-                --
-            </span>
-            <span class="text-gray-400 text-xs mt-1 tracking-widest">DAYS</span>
+            <div class="flex flex-col items-center">
+                <span id="cd-days"
+                      class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
+                             px-5 py-3 rounded-xl shadow-lg border border-cyan-500/20">
+                    --
+                </span>
+                <span class="text-gray-400 text-xs mt-1 tracking-widest">DAYS</span>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <span id="cd-hours"
+                      class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
+                             px-5 py-3 rounded-xl shadow-lg border border-cyan-500/20">
+                    --
+                </span>
+                <span class="text-gray-400 text-xs mt-1 tracking-widest">HOURS</span>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <span id="cd-minutes"
+                      class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
+                             px-5 py-3 rounded-xl shadow-lg border border-cyan-500/20">
+                    --
+                </span>
+                <span class="text-gray-400 text-xs mt-1 tracking-widest">MINS</span>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <span id="cd-seconds"
+                      class="text-4xl sm:text-5xl font-bold text-red-400 bg-black/40 
+                             px-5 py-3 rounded-xl shadow-lg border border-red-500/20">
+                    --
+                </span>
+                <span class="text-gray-400 text-xs mt-1 tracking-widest">SECS</span>
+            </div>
+
         </div>
 
-        <div class="flex flex-col items-center">
-            <span id="cd-hours" class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
-                                      px-4 py-2 rounded-lg shadow-lg border border-cyan-500/20">
-                --
-            </span>
-            <span class="text-gray-400 text-xs mt-1 tracking-widest">HOURS</span>
-        </div>
-
-        <div class="flex flex-col items-center">
-            <span id="cd-minutes" class="text-4xl sm:text-5xl font-bold text-cyan-300 bg-black/40 
-                                        px-4 py-2 rounded-lg shadow-lg border border-cyan-500/20">
-                --
-            </span>
-            <span class="text-gray-400 text-xs mt-1 tracking-widest">MINS</span>
-        </div>
-
-        <div class="flex flex-col items-center">
-            <span id="cd-seconds" class="text-4xl sm:text-5xl font-bold text-red-400 bg-black/40 
-                                        px-4 py-2 rounded-lg shadow-lg border border-red-500/20">
-                --
-            </span>
-            <span class="text-gray-400 text-xs mt-1 tracking-widest">SECS</span>
-        </div>
+        <p class="text-gray-400 text-xs mt-3">NET: {{ launch.net }}</p>
     </div>
-
-    <p class="text-gray-400 text-sm mt-3">NET: {{ launch.net }}</p>
-</div>
-
 
 
     <div class="grid sm:grid-cols-2 gap-6 bg-white/5 p-6 rounded-xl 
-                backdrop-blur border border-white/10 shadow-lg shadow-black/20">
+                backdrop-blur border border-white/10 shadow-xl shadow-black/20">
 
         <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-cyan-300">Mission Info</h2>
+            <h2 class="text-xl font-semibold text-cyan-300 mb-1">Mission Info</h2>
 
             {% if launch.mission_name %}
             <p><span class="font-semibold text-gray-300">Mission:</span> {{ launch.mission_name }}</p>
@@ -94,9 +99,8 @@
             {% endif %}
         </div>
 
-
         <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-cyan-300">Launch Pad</h2>
+            <h2 class="text-xl font-semibold text-cyan-300 mb-1">Launch Pad</h2>
 
             {% if launch.pad_name %}
             <p><span class="font-semibold text-gray-300">Pad:</span> {{ launch.pad_name }}</p>
@@ -114,12 +118,13 @@
             <p><span class="font-semibold text-gray-300">Window End:</span> {{ launch.window_end }}</p>
             {% endif %}
         </div>
+
     </div>
 
 
-
     {% if launch.mission_description %}
-    <div class="mt-8 bg-white/5 p-6 rounded-xl backdrop-blur border border-white/10 shadow-lg shadow-black/20">
+    <div class="mt-8 bg-white/5 p-6 rounded-xl 
+                backdrop-blur border border-white/10 shadow-xl shadow-black/20">
         <h2 class="text-xl font-semibold text-cyan-300 mb-2">Mission Description</h2>
         <p class="text-gray-300 leading-relaxed">
             {{ launch.mission_description }}
@@ -128,38 +133,37 @@
     {% endif %}
 
 
-
     <div class="mt-8 flex flex-wrap gap-4 justify-center">
-
         {% if launch.info_url %}
         <a href="{{ launch.info_url }}" target="_blank"
            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-sm shadow-lg">
-           More Info
+            More Info
         </a>
         {% endif %}
 
         {% if launch.webcast_url %}
         <a href="{{ launch.webcast_url }}" target="_blank"
            class="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm shadow-lg">
-           Watch Webcast
+            Watch Webcast
         </a>
         {% endif %}
     </div>
 
 
-
-    <div class="mt-10 text-center">
+    <div class="mt-12 text-center">
         {% if user.is_authenticated %}
             {% if is_following %}
                 <a href="{% url 'unfollow_launch' launch.id %}"
-                   class="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg 
-                          text-white text-sm shadow-lg shadow-red-500/20 transition">
+                   class="px-6 py-2 w-full max-w-xs mx-auto block
+                          bg-red-600 hover:bg-red-700 rounded-lg 
+                          text-white text-sm shadow-lg transition">
                     Unfollow
                 </a>
             {% else %}
                 <a href="{% url 'follow_launch' launch.id %}"
-                   class="px-6 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg 
-                          text-white text-sm shadow-lg shadow-cyan-500/20 transition">
+                   class="px-6 py-2 w-full max-w-xs mx-auto block
+                          bg-cyan-600 hover:bg-cyan-700 rounded-lg 
+                          text-white text-sm shadow-lg transition">
                     Follow
                 </a>
             {% endif %}
