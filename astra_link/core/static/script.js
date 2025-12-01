@@ -192,11 +192,19 @@ document.addEventListener("DOMContentLoaded", () => {
                             const next = current - 1;
 
                             if (next > 0) {
-                                counter.textContent = `You are following ${next} launches 🚀`;
+                                counter.innerHTML = `
+                                    You are following 
+                                    <span class="text-cyan-300 font-semibold font-mono 
+                                                drop-shadow-[0_0_6px_rgba(0,255,255,0.8)]">
+                                        ${next}
+                                    </span>
+                                    launches 🚀
+                                `;
                             } else {
-                                counter.remove();  
+                                counter.remove();
                             }
                         }
+
 
                         const grid = document.querySelector(".grid");
                         if (grid && grid.children.length === 0) {

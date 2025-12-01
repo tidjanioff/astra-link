@@ -6,10 +6,46 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from django.utils.timezone import now, make_aware
+from datetime import datetime, timezone
+
+def parse_date_safe(date_value):
+    if isinstance(date_value, datetime):
+        if date_value.tzinfo is None:
+            return make_aware(date_value)
+        return date_value
+
+    if isinstance(date_value, str):
+        cleaned = date_value.replace("Z", "+00:00")
+
+        try:
+            dt = datetime.fromisoformat(cleaned)
+            if dt.tzinfo is None:
+                return dt.replace(tzinfo=timezone.utc)
+            return dt
+        except:
+            pass
+        try:
+            dt = datetime.strptime(date_value, "%Y-%m-%d %H:%M:%S")
+            return make_aware(dt)
+        except:
+            pass
+
+    return None
 
 
 def index(request):
     launches = Launch.objects.all()
+    upcoming = []
+
+    for launch in launches:
+        dt = parse_date_safe(launch.net)
+
+        if dt is None:
+            upcoming.append(launch)  
+        else:
+            if dt > now():
+                upcoming.append(launch)
 
     if request.user.is_authenticated:
         user_followed = list(
@@ -19,10 +55,9 @@ def index(request):
         user_followed = []
 
     return render(request, "index.html", {
-        "launches": launches,
+        "launches": upcoming,
         "user_followed": user_followed,
     })
-
 
 
 def logout_view(request):
