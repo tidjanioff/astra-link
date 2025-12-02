@@ -4,7 +4,7 @@ AstraLink is a **space launch tracking web app** that lets users browse, follow,
 It combines live data from public space APIs with a **modern, dark-themed UI**, a personalized “My Launches” dashboard, and real-time countdowns for each mission.
 
 <p align="center">
-  <img src="astra_link/core/static/img/astralink.png" alt="AstraLink Logo" height="90">
+  <img src="astra_link/core/static/img/astralink.png" alt="AstraLink Logo" height="120">
 </p>
 
 ---
