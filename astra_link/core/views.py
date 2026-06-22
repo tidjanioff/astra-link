@@ -5,6 +5,7 @@ from .models import Launch, FollowedLaunch, UserProfile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from django.utils.timezone import now, make_aware
 from datetime import datetime, timezone
@@ -35,17 +36,10 @@ def parse_date_safe(date_value):
 
 
 def index(request):
-    launches = Launch.objects.all()
-    upcoming = []
-
-    for launch in launches:
-        dt = parse_date_safe(launch.net)
-
-        if dt is None:
-            upcoming.append(launch)  
-        else:
-            if dt > now():
-                upcoming.append(launch)
+    upcoming = Launch.objects.filter(net__gt=now())
+    paginator = Paginator(upcoming, 12)
+    page_number = request.GET.get("page", 1)
+    page = paginator.get_page(page_number)
 
     if request.user.is_authenticated:
         user_followed = list(
@@ -55,7 +49,8 @@ def index(request):
         user_followed = []
 
     return render(request, "index.html", {
-        "launches": upcoming,
+        "launches": page,
+        "paginator": paginator,
         "user_followed": user_followed,
     })
 

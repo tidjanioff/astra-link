@@ -90,6 +90,27 @@
         {% endfor %}
     </div>
 
+    <nav class="mt-10 flex items-center justify-center gap-4" aria-label="Launch pagination">
+        {% if launches.has_previous %}
+        <a href="?page={{ launches.previous_page_number }}"
+           class="rounded-lg border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20 hover:text-cyan-200">
+            Previous
+        </a>
+        {% endif %}
+
+        <span class="text-sm text-slate-400">
+            Page <span class="font-semibold text-slate-200">{{ launches.number }}</span>
+            of <span class="font-semibold text-slate-200">{{ paginator.num_pages }}</span>
+        </span>
+
+        {% if launches.has_next %}
+        <a href="?page={{ launches.next_page_number }}"
+           class="rounded-lg border border-cyan-400/40 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20 hover:text-cyan-200">
+            Next
+        </a>
+        {% endif %}
+    </nav>
+
 </div>
 
 {% endblock %}

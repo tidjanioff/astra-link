@@ -22,78 +22,86 @@ def parse_datetime_safe(value: str):
 
 
 def fetch_upcoming_launches():
-    
-    response = requests.get(API_URL)
-    response.raise_for_status()
-    data = response.json()
-
     count = 0
+    url = API_URL
 
-    for item in data["results"]:
-        external_id = item["id"]
+    while url:
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            print(f"Error fetching launches: {exc}")
+            break
 
-        net = parse_datetime_safe(item.get("net"))
-        window_start = parse_datetime_safe(item.get("window_start"))
-        window_end = parse_datetime_safe(item.get("window_end"))
+        data = response.json()
 
-        provider = (
-            item.get("launch_service_provider", {}).get("name")
-            if item.get("launch_service_provider")
-            else None
-        )
+        for item in data.get("results", []):
+            external_id = item["id"]
 
-        rocket_name = (
-            item.get("rocket", {})
-                .get("configuration", {})
-                .get("full_name")
-            if item.get("rocket")
-            else None
-        )
+            net = parse_datetime_safe(item.get("net"))
+            window_start = parse_datetime_safe(item.get("window_start"))
+            window_end = parse_datetime_safe(item.get("window_end"))
 
-        pad_name = item.get("pad", {}).get("name")
-        location_name = (
-            item.get("pad", {})
-                .get("location", {})
-                .get("name")
-            if item.get("pad")
-            else None
-        )
+            provider = (
+                item.get("launch_service_provider", {}).get("name")
+                if item.get("launch_service_provider")
+                else None
+            )
 
-        mission_name = None
-        mission_description = None
-        if item.get("mission"):
-            mission_name = item["mission"].get("name")
-            mission_description = item["mission"].get("description")
+            rocket_name = (
+                item.get("rocket", {})
+                    .get("configuration", {})
+                    .get("full_name")
+                if item.get("rocket")
+                else None
+            )
 
-        status = item.get("status", {}).get("name")
+            pad_name = item.get("pad", {}).get("name")
+            location_name = (
+                item.get("pad", {})
+                    .get("location", {})
+                    .get("name")
+                if item.get("pad")
+                else None
+            )
 
-        image_url = item.get("image")
-        info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
-        webcast_url = item.get("webcast") or None
+            mission_name = None
+            mission_description = None
+            if item.get("mission"):
+                mission_name = item["mission"].get("name")
+                mission_description = item["mission"].get("description")
 
-        Launch.objects.update_or_create(
-            external_id=external_id,
-            defaults={
-                "name": item.get("name"),
-                "net": net,
-                "window_start": window_start,
-                "window_end": window_end,
+            status = item.get("status", {}).get("name")
 
-                "provider": provider,
-                "rocket_name": rocket_name,
-                "pad_name": pad_name,
-                "location_name": location_name,
+            image_url = item.get("image")
+            info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
+            webcast_url = item.get("webcast") or None
 
-                "mission_name": mission_name,
-                "mission_description": mission_description,
+            Launch.objects.update_or_create(
+                external_id=external_id,
+                defaults={
+                    "name": item.get("name"),
+                    "net": net,
+                    "window_start": window_start,
+                    "window_end": window_end,
 
-                "status": status,
-                "image_url": image_url,
-                "info_url": info_url,
-                "webcast_url": webcast_url,
-            }
-        )
+                    "provider": provider,
+                    "rocket_name": rocket_name,
+                    "pad_name": pad_name,
+                    "location_name": location_name,
 
-        count += 1
+                    "mission_name": mission_name,
+                    "mission_description": mission_description,
+
+                    "status": status,
+                    "image_url": image_url,
+                    "info_url": info_url,
+                    "webcast_url": webcast_url,
+                }
+            )
+
+            count += 1
+
+        url = data.get("next")
 
     return count

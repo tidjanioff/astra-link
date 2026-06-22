@@ -42,11 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    const slidesContainer = document.getElementById("hero-slides");
+    if (!slidesContainer) return;
+
     const res = await fetch("https://api.spaceflightnewsapi.net/v4/articles/?limit=5");
     const data = await res.json();
     const articles = data.results;
 
-    const slidesContainer = document.getElementById("hero-slides");
     const titleEl = document.getElementById("hero-title");
     const summaryEl = document.getElementById("hero-summary");
     const btnEl = document.getElementById("hero-btn");
@@ -166,12 +168,36 @@ document.addEventListener("DOMContentLoaded", () => {
             
                 if (isUnfollow) {
                     btn.textContent = "Follow";
-                    btn.classList.remove("bg-red-600/80", "hover:bg-red-700");
-                    btn.classList.add("bg-cyan-600/80", "hover:bg-cyan-700");
+                    btn.classList.remove(
+                        "bg-red-500",
+                        "text-white",
+                        "shadow-[0_0_8px_rgba(255,0,0,0.4)]",
+                        "hover:bg-red-400",
+                        "hover:shadow-[0_0_12px_rgba(255,0,0,0.7)]"
+                    );
+                    btn.classList.add(
+                        "bg-cyan-500",
+                        "text-black",
+                        "shadow-[0_0_8px_rgba(0,255,255,0.5)]",
+                        "hover:bg-cyan-300",
+                        "hover:shadow-[0_0_12px_rgba(0,255,255,0.8)]"
+                    );
                 } else {
                     btn.textContent = "Unfollow";
-                    btn.classList.remove("bg-cyan-600/80", "hover:bg-cyan-700");
-                    btn.classList.add("bg-red-600/80", "hover:bg-red-700");
+                    btn.classList.remove(
+                        "bg-cyan-500",
+                        "text-black",
+                        "shadow-[0_0_8px_rgba(0,255,255,0.5)]",
+                        "hover:bg-cyan-300",
+                        "hover:shadow-[0_0_12px_rgba(0,255,255,0.8)]"
+                    );
+                    btn.classList.add(
+                        "bg-red-500",
+                        "text-white",
+                        "shadow-[0_0_8px_rgba(255,0,0,0.4)]",
+                        "hover:bg-red-400",
+                        "hover:shadow-[0_0_12px_rgba(255,0,0,0.7)]"
+                    );
                 }
 
            
@@ -229,4 +255,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
-
