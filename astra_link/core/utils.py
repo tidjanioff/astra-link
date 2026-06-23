@@ -1,8 +1,9 @@
 import time
 
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from django.utils.timezone import is_aware, make_aware
+from mongoengine import DoesNotExist
 from .models import Launch, LaunchStatusHistory
 
 
@@ -39,6 +40,32 @@ def parse_datetime_safe(value: str):
         return dt
 
     return make_aware(dt)
+
+
+def upsert_launch(external_id, defaults):
+    now = datetime.now(timezone.utc)
+
+    try:
+        launch = Launch.objects.get(external_id=external_id)
+        if launch.status != defaults["status"]:
+            LaunchStatusHistory(
+                launch=launch,
+                previous_status=launch.status,
+                new_status=defaults["status"],
+                recorded_at=now,
+            ).save()
+
+        for field_name, value in defaults.items():
+            setattr(launch, field_name, value)
+        launch.updated_at = now
+        launch.save()
+    except DoesNotExist:
+        Launch(
+            external_id=external_id,
+            created_at=now,
+            updated_at=now,
+            **defaults
+        ).save()
 
 
 def fetch_upcoming_launches():
@@ -108,19 +135,9 @@ def fetch_upcoming_launches():
             info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
             webcast_url = item.get("webcast") or None
 
-            existing_launch = Launch.objects.filter(
-                external_id=external_id
-            ).first()
-            if existing_launch and existing_launch.status != status:
-                LaunchStatusHistory.objects.create(
-                    launch=existing_launch,
-                    previous_status=existing_launch.status,
-                    new_status=status,
-                )
-
-            Launch.objects.update_or_create(
-                external_id=external_id,
-                defaults={
+            upsert_launch(
+                external_id,
+                {
                     "name": item.get("name"),
                     "net": net,
                     "window_start": window_start,
@@ -220,19 +237,9 @@ def fetch_historical_launches():
             info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
             webcast_url = item.get("webcast") or None
 
-            existing_launch = Launch.objects.filter(
-                external_id=external_id
-            ).first()
-            if existing_launch and existing_launch.status != status:
-                LaunchStatusHistory.objects.create(
-                    launch=existing_launch,
-                    previous_status=existing_launch.status,
-                    new_status=status,
-                )
-
-            Launch.objects.update_or_create(
-                external_id=external_id,
-                defaults={
+            upsert_launch(
+                external_id,
+                {
                     "name": item.get("name"),
                     "net": net,
                     "window_start": window_start,

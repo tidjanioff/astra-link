@@ -1,181 +1,102 @@
 from django.db import models
 from django.contrib.auth.models import User
+from mongoengine import (
+    CASCADE,
+    BooleanField,
+    DateTimeField,
+    Document,
+    FloatField,
+    IntField,
+    ReferenceField,
+    StringField,
+)
 
 
-class Launch(models.Model):
-    external_id = models.CharField(
-        max_length=100,
-        unique=True,
-        help_text="ID of the launch in the external API."
-    )
+class Launch(Document):
+    external_id = StringField(max_length=100, unique=True, required=True)
+    name = StringField(max_length=255, required=True)
+    provider = StringField(max_length=255, null=True)
+    mission_name = StringField(max_length=255, null=True)
+    mission_description = StringField(null=True)
+    net = DateTimeField(required=True)
+    window_start = DateTimeField(null=True)
+    window_end = DateTimeField(null=True)
+    pad_name = StringField(max_length=255, null=True)
+    location_name = StringField(max_length=255, null=True)
+    rocket_name = StringField(max_length=255, null=True)
+    orbit = StringField(max_length=100, null=True)
+    mission_type = StringField(max_length=100, null=True)
+    rocket_family = StringField(max_length=100, null=True)
+    launch_success = BooleanField(null=True)
+    image_url = StringField(null=True)
+    info_url = StringField(null=True)
+    webcast_url = StringField(null=True)
+    status = StringField(max_length=100, null=True)
+    created_at = DateTimeField(required=True)
+    updated_at = DateTimeField(required=True)
 
-    name = models.CharField(max_length=255)
-    provider = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="Launch provider (ex: SpaceX, NASA, ESA)."
-    )
-    mission_name = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="Mission name if available."
-    )
-    mission_description = models.TextField(
-        blank=True,
-        null=True,
-        help_text="Short description of the mission"
-    )
-
-    net = models.DateTimeField(
-        help_text="No Earlier Than datetime of the launch."
-    )
-    window_start = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="Launch window start datetime."
-    )
-    window_end = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text="Launch window end datetime."
-    )
-
-    pad_name = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="Launch pad name."
-    )
-    location_name = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="Launch site/ location name."
-    )
-
-    rocket_name = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="Rocket or launch vehicle name."
-    )
-    orbit = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        help_text="Target orbit (e.g. LEO, GEO, SSO)"
-    )
-    mission_type = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        help_text="Mission type (e.g. Communications, Earth Science)"
-    )
-    rocket_family = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        help_text="Rocket family (e.g. Falcon, Soyuz)"
-    )
-    launch_success = models.BooleanField(
-        blank=True,
-        null=True,
-        help_text="Whether the launch succeeded. Null for upcoming launches."
-    )
-
-    image_url = models.URLField(
-        blank=True,
-        null=True,
-        help_text="Main image URL for this launch"
-    )
-    info_url = models.URLField(
-        blank=True,
-        null=True,
-        help_text="More information about this launch."
-    )
-    webcast_url = models.URLField(
-        blank=True,
-        null=True,
-        help_text="Webcast or livestream URL."
-    )
-
-    status = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        help_text="Launch status (e.g. Go, TBD, Success)."
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        help_text="Datetime when this record was created."
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        help_text="Datetime when this record was last updated."
-    )
-
-    class Meta:
-        ordering = ["net"]
+    meta = {
+        "collection": "launches",
+        "ordering": ["net"],
+        "indexes": ["external_id", "net", "provider", "rocket_family"],
+    }
 
     def __str__(self):
         return f"{self.name} ({self.net})"
 
 
-class LaunchStatusHistory(models.Model):
-    launch = models.ForeignKey(
-        Launch,
-        on_delete=models.CASCADE,
-        related_name="status_history"
-    )
-    previous_status = models.CharField(max_length=100, blank=True, null=True)
-    new_status = models.CharField(max_length=100)
-    recorded_at = models.DateTimeField(auto_now_add=True)
+class LaunchStatusHistory(Document):
+    launch = ReferenceField(Launch, reverse_delete_rule=CASCADE, required=True)
+    previous_status = StringField(max_length=100, null=True)
+    new_status = StringField(max_length=100, required=True)
+    recorded_at = DateTimeField(required=True)
 
-    class Meta:
-        ordering = ["-recorded_at"]
+    meta = {
+        "collection": "launch_status_history",
+        "ordering": ["-recorded_at"],
+        "indexes": ["launch", "recorded_at"],
+    }
 
     def __str__(self):
         return f"{self.launch.name}: {self.previous_status} → {self.new_status}"
 
 
-class AgencyStats(models.Model):
-    provider = models.CharField(max_length=255, unique=True)
-    total_launches = models.IntegerField(default=0)
-    successful_launches = models.IntegerField(default=0)
-    failed_launches = models.IntegerField(default=0)
-    success_rate = models.FloatField(
-        null=True,
-        blank=True,
-        help_text="Percentage 0-100"
-    )
-    avg_status_changes = models.FloatField(
-        null=True,
-        blank=True,
-        help_text="Average number of status changes per launch"
-    )
-    most_common_orbit = models.CharField(max_length=100, null=True, blank=True)
-    most_common_mission_type = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True
-    )
-    last_computed = models.DateTimeField(auto_now=True)
+class AgencyStats(Document):
+    provider = StringField(max_length=255, unique=True, required=True)
+    total_launches = IntField(default=0)
+    successful_launches = IntField(default=0)
+    failed_launches = IntField(default=0)
+    success_rate = FloatField(null=True)
+    avg_status_changes = FloatField(null=True)
+    most_common_orbit = StringField(max_length=100, null=True)
+    most_common_mission_type = StringField(max_length=100, null=True)
+    last_computed = DateTimeField(required=True)
+
+    meta = {
+        "collection": "agency_stats",
+        "ordering": ["provider"],
+        "indexes": ["provider"],
+    }
 
     def __str__(self):
         return f"{self.provider} — {self.success_rate}% success"
 
 
-class RocketStats(models.Model):
-    rocket_family = models.CharField(max_length=100, unique=True)
-    total_launches = models.IntegerField(default=0)
-    successful_launches = models.IntegerField(default=0)
-    failed_launches = models.IntegerField(default=0)
-    success_rate = models.FloatField(null=True, blank=True)
-    avg_status_changes = models.FloatField(null=True, blank=True)
-    most_common_orbit = models.CharField(max_length=100, null=True, blank=True)
-    last_computed = models.DateTimeField(auto_now=True)
+class RocketStats(Document):
+    rocket_family = StringField(max_length=100, unique=True, required=True)
+    total_launches = IntField(default=0)
+    successful_launches = IntField(default=0)
+    failed_launches = IntField(default=0)
+    success_rate = FloatField(null=True)
+    avg_status_changes = FloatField(null=True)
+    most_common_orbit = StringField(max_length=100, null=True)
+    last_computed = DateTimeField(required=True)
+
+    meta = {
+        "collection": "rocket_stats",
+        "ordering": ["rocket_family"],
+        "indexes": ["rocket_family"],
+    }
 
     def __str__(self):
         return f"{self.rocket_family} — {self.success_rate}% success"
@@ -206,20 +127,16 @@ class FollowedLaunch(models.Model):
         on_delete=models.CASCADE,
         related_name="followed_launches"
     )
-    launch = models.ForeignKey(
-        Launch,
-        on_delete=models.CASCADE,
-        related_name="followers"
-    )
+    launch_external_id = models.CharField(max_length=100)
     followed_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Datetime when the user started following this launch."
     )
 
     class Meta:
-        unique_together = ("user", "launch")
+        unique_together = ("user", "launch_external_id")
         verbose_name = "Followed launch"
         verbose_name_plural = "Followed launches"
 
     def __str__(self):
-        return f"{self.user.username} follows {self.launch.name}"
+        return f"{self.user.username} follows {self.launch_external_id}"
