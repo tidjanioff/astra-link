@@ -140,6 +140,47 @@ class LaunchStatusHistory(models.Model):
         return f"{self.launch.name}: {self.previous_status} → {self.new_status}"
 
 
+class AgencyStats(models.Model):
+    provider = models.CharField(max_length=255, unique=True)
+    total_launches = models.IntegerField(default=0)
+    successful_launches = models.IntegerField(default=0)
+    failed_launches = models.IntegerField(default=0)
+    success_rate = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Percentage 0-100"
+    )
+    avg_status_changes = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Average number of status changes per launch"
+    )
+    most_common_orbit = models.CharField(max_length=100, null=True, blank=True)
+    most_common_mission_type = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    last_computed = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.provider} — {self.success_rate}% success"
+
+
+class RocketStats(models.Model):
+    rocket_family = models.CharField(max_length=100, unique=True)
+    total_launches = models.IntegerField(default=0)
+    successful_launches = models.IntegerField(default=0)
+    failed_launches = models.IntegerField(default=0)
+    success_rate = models.FloatField(null=True, blank=True)
+    avg_status_changes = models.FloatField(null=True, blank=True)
+    most_common_orbit = models.CharField(max_length=100, null=True, blank=True)
+    last_computed = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.rocket_family} — {self.success_rate}% success"
+
+
 class UserProfile(models.Model):
 
     user = models.OneToOneField(
