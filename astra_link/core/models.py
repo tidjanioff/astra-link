@@ -61,6 +61,29 @@ class Launch(models.Model):
         null=True,
         help_text="Rocket or launch vehicle name."
     )
+    orbit = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Target orbit (e.g. LEO, GEO, SSO)"
+    )
+    mission_type = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Mission type (e.g. Communications, Earth Science)"
+    )
+    rocket_family = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Rocket family (e.g. Falcon, Soyuz)"
+    )
+    launch_success = models.BooleanField(
+        blank=True,
+        null=True,
+        help_text="Whether the launch succeeded. Null for upcoming launches."
+    )
 
     image_url = models.URLField(
         blank=True,
@@ -98,6 +121,23 @@ class Launch(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.net})"
+
+
+class LaunchStatusHistory(models.Model):
+    launch = models.ForeignKey(
+        Launch,
+        on_delete=models.CASCADE,
+        related_name="status_history"
+    )
+    previous_status = models.CharField(max_length=100, blank=True, null=True)
+    new_status = models.CharField(max_length=100)
+    recorded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-recorded_at"]
+
+    def __str__(self):
+        return f"{self.launch.name}: {self.previous_status} → {self.new_status}"
 
 
 class UserProfile(models.Model):
