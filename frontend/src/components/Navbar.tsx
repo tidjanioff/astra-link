@@ -1,4 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 import { useAuth } from '../context/AuthContext'
 
@@ -10,7 +11,9 @@ const navLinkBaseStyle = {
 
 function Navbar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const [logoutHovered, setLogoutHovered] = useState(false)
 
   const linkStyle = (path: string) => ({
     ...navLinkBaseStyle,
@@ -78,11 +81,15 @@ function Navbar() {
           </Link>
           {user ? (
             <span
-              onClick={() => {
-                logout()
+              onClick={async () => {
+                await logout()
+                navigate('/')
               }}
+              onMouseEnter={() => setLogoutHovered(true)}
+              onMouseLeave={() => setLogoutHovered(false)}
               style={{
                 ...navLinkBaseStyle,
+                color: logoutHovered ? '#ffffff' : navLinkBaseStyle.color,
                 cursor: 'pointer',
               }}
             >

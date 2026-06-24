@@ -174,140 +174,158 @@ function MyLaunchesPage() {
 
       {!loading &&
         !error &&
-        launches.map((launch) => (
-          <Link
-            key={launch.id}
-            to={`/launches/${launch.id}`}
-            onMouseEnter={() => setHoveredLaunchId(launch.id)}
-            onMouseLeave={() => setHoveredLaunchId(null)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              borderBottom: '1px solid var(--color-border)',
-              padding: '1.5rem 0',
-              cursor: 'pointer',
-              background:
-                hoveredLaunchId === launch.id
-                  ? 'var(--color-surface)'
-                  : 'transparent',
-              transition: 'background 0.15s',
-            }}
-          >
-            {launch.image_url ? (
-              <img
-                src={launch.image_url}
-                alt=""
-                style={{
-                  width: '120px',
-                  height: '80px',
-                  objectFit: 'cover',
-                  flexShrink: 0,
-                  borderRadius: '2px',
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: '120px',
-                  height: '80px',
-                  flexShrink: 0,
-                  borderRadius: '2px',
-                  background: '#1a1a1a',
-                }}
-              />
-            )}
-            <div
+        launches.map((launch) => {
+          const rocketName = launch.rocket_name ?? launch.rocket_family
+
+          return (
+            <Link
+              key={launch.id}
+              to={`/launches/${launch.id}`}
+              onMouseEnter={() => setHoveredLaunchId(launch.id)}
+              onMouseLeave={() => setHoveredLaunchId(null)}
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                marginLeft: '1.5rem',
-                flex: 1,
-                minWidth: 0,
+                alignItems: 'center',
+                borderBottom: '1px solid var(--color-border)',
+                padding: '1.5rem 0',
+                cursor: 'pointer',
+                background:
+                  hoveredLaunchId === launch.id
+                    ? 'var(--color-surface)'
+                    : 'transparent',
+                transition: 'background 0.15s',
               }}
             >
-              <div
-                style={{
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.15em',
-                  color: 'var(--color-text-muted)',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {launch.provider ?? 'UNKNOWN PROVIDER'}
-              </div>
-              <div
-                style={{
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  color: '#ffffff',
-                  marginTop: '0.25rem',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {launch.name}
-              </div>
+              {launch.image_url ? (
+                <img
+                  src={launch.image_url}
+                  alt=""
+                  style={{
+                    width: '120px',
+                    height: '80px',
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                    borderRadius: '2px',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '120px',
+                    height: '80px',
+                    flexShrink: 0,
+                    borderRadius: '2px',
+                    background: '#1a1a1a',
+                  }}
+                />
+              )}
               <div
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  marginTop: '0.5rem',
-                  fontFamily: monoFont,
-                  fontSize: '0.75rem',
-                  color: 'var(--color-text-secondary)',
+                  flexDirection: 'column',
+                  marginLeft: '1.5rem',
+                  flex: 1,
+                  minWidth: 0,
                 }}
               >
-                <span>{launch.rocket_name ?? 'ROCKET TBD'}</span>
-                <span>·</span>
-                <span>{formatLaunchDate(launch.net)}</span>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.15em',
+                    color: 'var(--color-text-muted)',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {launch.provider ?? 'UNKNOWN PROVIDER'}
+                </div>
+                <div
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    color: '#ffffff',
+                    marginTop: '0.25rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {launch.name}
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginTop: '0.5rem',
+                    fontFamily: monoFont,
+                    fontSize: '0.75rem',
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  <span>{rocketName}</span>
+                  <span>·</span>
+                  <span>{formatLaunchDate(launch.net)}</span>
+                </div>
+                {launch.reliability_score && (
+                  <div
+                    style={{
+                      fontSize: '0.7rem',
+                      fontFamily: monoFont,
+                      color: 'var(--color-text-muted)',
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {(launch.rocket_family ?? 'UNKNOWN').toUpperCase()} ·{' '}
+                    {launch.reliability_score.success_rate ?? 'N/A'}% SUCCESS
+                    RATE
+                  </div>
+                )}
               </div>
-            </div>
-            <div
-              style={{
-                marginLeft: 'auto',
-                textAlign: 'right',
-                flexShrink: 0,
-              }}
-            >
               <div
                 style={{
-                  textTransform: 'uppercase',
-                  fontSize: '0.7rem',
-                  fontFamily: monoFont,
-                  letterSpacing: '0.1em',
-                  color: getStatusColor(launch.status),
-                  marginBottom: '0.75rem',
+                  marginLeft: 'auto',
+                  textAlign: 'right',
+                  flexShrink: 0,
                 }}
               >
-                {launch.status ?? 'TBD'}
+                <div
+                  style={{
+                    textTransform: 'uppercase',
+                    fontSize: '0.7rem',
+                    fontFamily: monoFont,
+                    letterSpacing: '0.1em',
+                    color: getStatusColor(launch.status),
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  {launch.status ?? 'TBD'}
+                </div>
+                <span
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    handleUnfollow(launch)
+                  }}
+                  onMouseEnter={() => setHoveredUnfollowId(launch.id)}
+                  onMouseLeave={() => setHoveredUnfollowId(null)}
+                  style={{
+                    fontSize: '0.75rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.15em',
+                    fontFamily: monoFont,
+                    color:
+                      hoveredUnfollowId === launch.id
+                        ? 'var(--color-danger)'
+                        : 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  UNFOLLOW
+                </span>
               </div>
-              <span
-                onClick={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  handleUnfollow(launch)
-                }}
-                onMouseEnter={() => setHoveredUnfollowId(launch.id)}
-                onMouseLeave={() => setHoveredUnfollowId(null)}
-                style={{
-                  fontSize: '0.75rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.15em',
-                  fontFamily: monoFont,
-                  color:
-                    hoveredUnfollowId === launch.id
-                      ? 'var(--color-danger)'
-                      : 'var(--color-text-muted)',
-                  cursor: 'pointer',
-                }}
-              >
-                UNFOLLOW
-              </span>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          )
+        })}
     </main>
   )
 }

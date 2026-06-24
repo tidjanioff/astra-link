@@ -10,7 +10,6 @@ from rest_framework.views import APIView
 from .models import AgencyStats, FollowedLaunch, Launch, RocketStats
 from .serializers import (
     AgencyStatsSerializer,
-    FollowedLaunchSerializer,
     LaunchSerializer,
     RocketStatsSerializer,
 )
@@ -91,13 +90,31 @@ class RocketFamilyDetailView(generics.RetrieveAPIView):
 
 
 class FollowedLaunchListView(generics.ListAPIView):
-    serializer_class = FollowedLaunchSerializer
+    serializer_class = LaunchSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return FollowedLaunch.objects.filter(
-            user=self.request.user
+    def list(self, request, *args, **kwargs):
+        followed = FollowedLaunch.objects.filter(
+            user=request.user
         ).select_related("launch")
+        external_ids = [f.launch.external_id for f in followed]
+        launches = Launch.objects.filter(external_id__in=external_ids)
+
+        page = self.paginate_queryset(launches)
+        if page is not None:
+            serializer = LaunchSerializer(
+                page,
+                many=True,
+                context={"request": request},
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = LaunchSerializer(
+            launches,
+            many=True,
+            context={"request": request},
+        )
+        return Response(serializer.data)
 
 
 class FollowToggleView(APIView):

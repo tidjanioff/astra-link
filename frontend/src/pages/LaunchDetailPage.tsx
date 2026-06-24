@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { followToggle, getLaunch, getLaunchBriefing } from '../api/launches'
+import {
+  followToggle,
+  getLaunch,
+  getLaunchBriefing,
+  getMyLaunches,
+} from '../api/launches'
+import { useAuth } from '../context/AuthContext'
 import type { Launch } from '../types'
 
 const monoFont =
@@ -134,25 +140,13 @@ function OutlinedButton({
   )
 }
 
-function isForbiddenError(error: unknown) {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'response' in error &&
-    typeof error.response === 'object' &&
-    error.response !== null &&
-    'status' in error.response &&
-    error.response.status === 403
-  )
-}
-
 function LaunchDetailPage() {
   const { id } = useParams()
+  const { user, loading: authLoading } = useAuth()
   const [launch, setLaunch] = useState<Launch | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [followed, setFollowed] = useState(false)
-  const [authenticated, setAuthenticated] = useState(true)
   const [briefing, setBriefing] = useState<string | null>(null)
   const [briefingLoading, setBriefingLoading] = useState(false)
   const [briefingError, setBriefingError] = useState<string | null>(null)
@@ -176,6 +170,20 @@ function LaunchDetailPage() {
         if (!ignore) {
           setLaunch(data)
         }
+
+        if (user !== null) {
+          const followedLaunches = await getMyLaunches()
+          if (!ignore) {
+            setFollowed(
+              followedLaunches.results.some(
+                (followedLaunch) =>
+                  followedLaunch.external_id === data.external_id,
+              ),
+            )
+          }
+        } else if (!ignore) {
+          setFollowed(false)
+        }
       } catch {
         if (!ignore) {
           setError('Unable to load launch.')
@@ -192,7 +200,7 @@ function LaunchDetailPage() {
     return () => {
       ignore = true
     }
-  }, [id])
+  }, [id, user])
 
   const handleFollowToggle = async () => {
     if (!launch) {
@@ -202,11 +210,8 @@ function LaunchDetailPage() {
     try {
       const response = await followToggle(launch.external_id)
       setFollowed(response.followed)
-      setAuthenticated(true)
-    } catch (requestError) {
-      if (isForbiddenError(requestError)) {
-        setAuthenticated(false)
-      }
+    } catch {
+      return
     }
   }
 
@@ -458,10 +463,12 @@ function LaunchDetailPage() {
 
             <div style={dividerStyle} />
 
-            <OutlinedButton onClick={handleFollowToggle}>
-              {followed ? 'UNFOLLOW' : 'FOLLOW LAUNCH'}
-            </OutlinedButton>
-            {!authenticated && (
+            {user !== null && (
+              <OutlinedButton onClick={handleFollowToggle}>
+                {followed ? 'UNFOLLOW' : 'FOLLOW LAUNCH'}
+              </OutlinedButton>
+            )}
+            {!authLoading && user === null && (
               <p
                 style={{
                   color: 'var(--color-text-muted)',
