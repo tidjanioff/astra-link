@@ -1,0 +1,1 @@
+web: gunicorn astra_link.wsgi --log-file -

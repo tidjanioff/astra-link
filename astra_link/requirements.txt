@@ -10,3 +10,8 @@ urllib3==2.5.0
 mongoengine
 python-dotenv
 djangorestframework
+gunicorn
+whitenoise
+django-cors-headers
+dj-database-url
+psycopg2-binary
