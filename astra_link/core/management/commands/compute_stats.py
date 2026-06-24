@@ -39,6 +39,9 @@ class Command(BaseCommand):
         agency_count = 0
         rocket_count = 0
 
+        AgencyStats.objects.all().delete()
+        RocketStats.objects.all().delete()
+
         providers = sorted(
             provider
             for provider in Launch.objects.values_list(
@@ -63,23 +66,21 @@ class Command(BaseCommand):
                 launch_success=False
             ).count()
 
-            AgencyStats.objects.update_or_create(
+            AgencyStats.objects.create(
                 provider=provider,
-                defaults={
-                    "total_launches": total_launches,
-                    "successful_launches": successful_launches,
-                    "failed_launches": failed_launches,
-                    "success_rate": success_rate(
-                        successful_launches,
-                        total_launches
-                    ),
-                    "avg_status_changes": average_status_changes(launches),
-                    "most_common_orbit": most_common_value(launches, "orbit"),
-                    "most_common_mission_type": most_common_value(
-                        launches,
-                        "mission_type"
-                    ),
-                },
+                total_launches=total_launches,
+                successful_launches=successful_launches,
+                failed_launches=failed_launches,
+                success_rate=success_rate(
+                    successful_launches,
+                    total_launches
+                ),
+                avg_status_changes=average_status_changes(launches),
+                most_common_orbit=most_common_value(launches, "orbit"),
+                most_common_mission_type=most_common_value(
+                    launches,
+                    "mission_type"
+                ),
             )
             agency_count += 1
             self.stdout.write(f"Processed agency: {provider}")
@@ -108,19 +109,17 @@ class Command(BaseCommand):
                 launch_success=False
             ).count()
 
-            RocketStats.objects.update_or_create(
+            RocketStats.objects.create(
                 rocket_family=rocket_family,
-                defaults={
-                    "total_launches": total_launches,
-                    "successful_launches": successful_launches,
-                    "failed_launches": failed_launches,
-                    "success_rate": success_rate(
-                        successful_launches,
-                        total_launches
-                    ),
-                    "avg_status_changes": average_status_changes(launches),
-                    "most_common_orbit": most_common_value(launches, "orbit"),
-                },
+                total_launches=total_launches,
+                successful_launches=successful_launches,
+                failed_launches=failed_launches,
+                success_rate=success_rate(
+                    successful_launches,
+                    total_launches
+                ),
+                avg_status_changes=average_status_changes(launches),
+                most_common_orbit=most_common_value(launches, "orbit"),
             )
             rocket_count += 1
             self.stdout.write(f"Processed rocket family: {rocket_family}")
