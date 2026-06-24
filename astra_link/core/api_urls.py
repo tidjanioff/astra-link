@@ -27,4 +27,12 @@ urlpatterns = [
         name="api_my_launches",
     ),
     path("follow/", api_views.FollowToggleView.as_view(), name="api_follow"),
+    path("auth/login/", api_views.LoginView.as_view(), name="api_login"),
+    path("auth/logout/", api_views.LogoutView.as_view(), name="api_logout"),
+    path(
+        "auth/register/",
+        api_views.RegisterView.as_view(),
+        name="api_register",
+    ),
+    path("auth/me/", api_views.MeView.as_view(), name="api_me"),
 ]

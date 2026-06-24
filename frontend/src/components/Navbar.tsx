@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 
+import { useAuth } from '../context/AuthContext'
+
 const navLinkBaseStyle = {
   fontSize: '0.75rem',
   letterSpacing: '0.15em',
@@ -8,6 +10,7 @@ const navLinkBaseStyle = {
 
 function Navbar() {
   const location = useLocation()
+  const { user, logout } = useAuth()
 
   const linkStyle = (path: string) => ({
     ...navLinkBaseStyle,
@@ -73,9 +76,23 @@ function Navbar() {
           <Link to="/my-launches" style={linkStyle('/my-launches')}>
             MY LAUNCHES
           </Link>
-          <Link to="/login" style={linkStyle('/login')}>
-            LOGIN
-          </Link>
+          {user ? (
+            <span
+              onClick={() => {
+                logout()
+              }}
+              style={{
+                ...navLinkBaseStyle,
+                cursor: 'pointer',
+              }}
+            >
+              LOGOUT
+            </span>
+          ) : (
+            <Link to="/login" style={linkStyle('/login')}>
+              LOGIN
+            </Link>
+          )}
         </div>
       </div>
     </nav>
