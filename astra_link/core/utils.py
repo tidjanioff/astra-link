@@ -1,9 +1,8 @@
 import time
 
 import requests
-from datetime import datetime, timezone
+from datetime import datetime
 from django.utils.timezone import is_aware, make_aware
-from mongoengine import DoesNotExist
 from .models import Launch, LaunchStatusHistory
 
 
@@ -43,29 +42,19 @@ def parse_datetime_safe(value: str):
 
 
 def upsert_launch(external_id, defaults):
-    now = datetime.now(timezone.utc)
+    launch = Launch.objects.filter(external_id=external_id).first()
 
-    try:
-        launch = Launch.objects.get(external_id=external_id)
-        if launch.status != defaults["status"]:
-            LaunchStatusHistory(
-                launch=launch,
-                previous_status=launch.status,
-                new_status=defaults["status"],
-                recorded_at=now,
-            ).save()
+    if launch and launch.status != defaults["status"]:
+        LaunchStatusHistory.objects.create(
+            launch=launch,
+            previous_status=launch.status,
+            new_status=defaults["status"],
+        )
 
-        for field_name, value in defaults.items():
-            setattr(launch, field_name, value)
-        launch.updated_at = now
-        launch.save()
-    except DoesNotExist:
-        Launch(
-            external_id=external_id,
-            created_at=now,
-            updated_at=now,
-            **defaults
-        ).save()
+    Launch.objects.update_or_create(
+        external_id=external_id,
+        defaults=defaults,
+    )
 
 
 def fetch_upcoming_launches():
