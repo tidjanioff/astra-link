@@ -54,3 +54,11 @@ export interface PaginatedResponse<T> {
   previous: string | null
   results: T[]
 }
+
+export interface MissionBriefing {
+  briefing: string
+}
+
+export interface FollowResponse {
+  followed: boolean
+}
