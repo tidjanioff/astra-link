@@ -41,6 +41,16 @@ def parse_datetime_safe(value: str):
     return make_aware(dt)
 
 
+def launch_success_from_status(status):
+    if not status:
+        return None
+    if "Success" in status:
+        return True
+    if "Failure" in status:
+        return False
+    return None
+
+
 def upsert_launch(external_id, defaults):
     launch = Launch.objects.filter(external_id=external_id).first()
 
@@ -119,6 +129,7 @@ def fetch_upcoming_launches():
                     orbit = item["mission"]["orbit"].get("name")
 
             status = item.get("status", {}).get("name")
+            launch_success = launch_success_from_status(status)
 
             image_url = item.get("image")
             info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
@@ -144,7 +155,7 @@ def fetch_upcoming_launches():
                     "orbit": orbit,
 
                     "status": status,
-                    "launch_success": None,
+                    "launch_success": launch_success,
                     "image_url": image_url,
                     "info_url": info_url,
                     "webcast_url": webcast_url,
@@ -221,6 +232,7 @@ def fetch_historical_launches():
                     orbit = item["mission"]["orbit"].get("name")
 
             status = item.get("status", {}).get("name")
+            launch_success = launch_success_from_status(status)
 
             image_url = item.get("image")
             info_url = item.get("infoURLs")[0] if item.get("infoURLs") else None
@@ -246,7 +258,7 @@ def fetch_historical_launches():
                     "orbit": orbit,
 
                     "status": status,
-                    "launch_success": item.get("launch_success"),
+                    "launch_success": launch_success,
                     "image_url": image_url,
                     "info_url": info_url,
                     "webcast_url": webcast_url,

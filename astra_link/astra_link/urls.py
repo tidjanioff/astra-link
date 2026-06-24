@@ -20,6 +20,7 @@ from core.views import logout_view, login_view, register_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include("core.api_urls")),
     path("", include("core.urls")),
     path("logout/", logout_view, name="logout"),
     path("login/", login_view, name="login"),

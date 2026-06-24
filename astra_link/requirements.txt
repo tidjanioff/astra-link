@@ -8,3 +8,4 @@ sqlparse==0.5.4
 urllib3==2.5.0
 mongoengine
 python-dotenv
+djangorestframework
