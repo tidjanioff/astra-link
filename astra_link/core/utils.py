@@ -1,13 +1,81 @@
+import json
+import os
 import time
 
+import anthropic
 import requests
 from datetime import datetime
 from django.utils.timezone import is_aware, make_aware
-from .models import Launch, LaunchStatusHistory
+from .models import Launch, LaunchStatusHistory, RocketStats
 
 
 API_URL = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=50"
 HISTORICAL_API_URL = "https://ll.thespacedevs.com/2.2.0/launch/previous/?limit=100"
+
+
+def build_mission_briefing_snapshot(launch):
+    rocket_stats = None
+    if launch.rocket_family:
+        rocket_stats = RocketStats.objects.filter(
+            rocket_family=launch.rocket_family
+        ).first()
+
+    reliability_context = None
+    if rocket_stats:
+        reliability_context = {
+            "success_rate": rocket_stats.success_rate,
+            "avg_status_changes": rocket_stats.avg_status_changes,
+        }
+
+    return {
+        "launch_name": launch.name,
+        "provider": launch.provider,
+        "rocket_name": launch.rocket_name,
+        "rocket_family": launch.rocket_family,
+        "mission_name": launch.mission_name,
+        "mission_description": launch.mission_description,
+        "target_orbit": launch.orbit,
+        "mission_type": launch.mission_type,
+        "launch_site": {
+            "pad": launch.pad_name,
+            "location": launch.location_name,
+        },
+        "net": launch.net.isoformat() if launch.net else None,
+        "status": launch.status,
+        "reliability_context": reliability_context,
+    }
+
+
+def generate_mission_briefing(launch):
+    client = anthropic.Anthropic(
+        api_key=os.environ.get("ANTHROPIC_API_KEY")
+    )
+    launch_data = build_mission_briefing_snapshot(launch)
+
+    system_prompt = (
+        "You are a space mission analyst. Write concise, factual mission "
+        "briefings for space launches. Use clear technical language "
+        "appropriate for space enthusiasts and professionals. Never speculate "
+        "beyond the provided data."
+    )
+    user_prompt = (
+        "Launch data:\n"
+        f"{json.dumps(launch_data, indent=2)}\n\n"
+        "Write a 3-4 paragraph mission briefing covering: mission objectives, "
+        "vehicle profile and reliability history, launch site and orbital "
+        "parameters, and mission significance. Write in plain prose only — "
+        "no markdown, no headers, no bullet points, no hashtags. Just clean "
+        "paragraphs separated by line breaks."
+    )
+
+    response = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=1000,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_prompt}],
+    )
+
+    return response.content[0].text
 
 
 def fetch_with_retry(url, max_retries=3):

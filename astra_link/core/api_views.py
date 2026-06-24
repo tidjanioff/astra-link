@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -7,12 +9,19 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import AgencyStats, FollowedLaunch, Launch, RocketStats
+from .models import (
+    AgencyStats,
+    FollowedLaunch,
+    Launch,
+    MissionBriefing,
+    RocketStats,
+)
 from .serializers import (
     AgencyStatsSerializer,
     LaunchSerializer,
     RocketStatsSerializer,
 )
+from .utils import build_mission_briefing_snapshot, generate_mission_briefing
 
 
 class LaunchListView(generics.ListAPIView):
@@ -52,6 +61,41 @@ class LaunchListView(generics.ListAPIView):
 class LaunchDetailView(generics.RetrieveAPIView):
     queryset = Launch.objects.all()
     serializer_class = LaunchSerializer
+
+
+class BriefingView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk, *args, **kwargs):
+        launch = Launch.objects.filter(pk=pk).first()
+        if not launch:
+            return Response(
+                {"detail": "Not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        briefing = MissionBriefing.objects.filter(launch=launch).first()
+        if briefing:
+            return Response({"briefing": briefing.content, "cached": True})
+
+        try:
+            content = generate_mission_briefing(launch)
+        except Exception:
+            return Response(
+                {"error": "Failed to generate briefing"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        launch_data_snapshot = json.dumps(
+            build_mission_briefing_snapshot(launch),
+            indent=2,
+        )
+        MissionBriefing.objects.create(
+            launch=launch,
+            content=content,
+            launch_data_snapshot=launch_data_snapshot,
+        )
+        return Response({"briefing": content, "cached": False})
 
 
 class AgencyListView(generics.ListAPIView):

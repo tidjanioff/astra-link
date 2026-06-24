@@ -10,6 +10,11 @@ urlpatterns = [
         api_views.LaunchDetailView.as_view(),
         name="api_launch_detail",
     ),
+    path(
+        "launches/<int:pk>/briefing/",
+        api_views.BriefingView.as_view(),
+        name="api_launch_briefing",
+    ),
     path("agencies/", api_views.AgencyListView.as_view(), name="api_agencies"),
     path(
         "agencies/<str:provider>/",

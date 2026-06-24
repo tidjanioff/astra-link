@@ -233,6 +233,17 @@ function LaunchDetailPage() {
     }
   }
 
+  const briefingParagraphs =
+    briefing
+      ?.split('\n\n')
+      .map((paragraph) => paragraph.trim())
+      .filter(
+        (paragraph) =>
+          paragraph.length > 0 &&
+          !paragraph.startsWith('# ') &&
+          !paragraph.startsWith('## '),
+      ) ?? []
+
   if (loading) {
     return (
       <main
@@ -536,18 +547,22 @@ function LaunchDetailPage() {
           )}
 
           {briefing && (
-            <p
-              style={{
-                fontSize: '0.95rem',
-                lineHeight: 1.8,
-                color: 'var(--color-text-secondary)',
-                maxWidth: '800px',
-                margin: '1rem 0 0',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {briefing}
-            </p>
+            <div style={{ marginTop: '1rem' }}>
+              {briefingParagraphs.map((paragraph, index) => (
+                <p
+                  key={index}
+                  style={{
+                    fontSize: '0.95rem',
+                    lineHeight: 1.8,
+                    color: 'var(--color-text-secondary)',
+                    marginBottom: '1.25rem',
+                    maxWidth: '720px',
+                  }}
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           )}
         </section>
       </section>

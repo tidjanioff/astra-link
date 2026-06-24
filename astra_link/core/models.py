@@ -148,6 +148,22 @@ class RocketStats(models.Model):
         return f"{self.rocket_family} — {self.success_rate}% success"
 
 
+class MissionBriefing(models.Model):
+    launch = models.OneToOneField(
+        Launch,
+        on_delete=models.CASCADE,
+        related_name="briefing",
+    )
+    content = models.TextField()
+    generated_at = models.DateTimeField(auto_now_add=True)
+    launch_data_snapshot = models.TextField(
+        help_text="Snapshot of launch data used to generate this briefing"
+    )
+
+    def __str__(self):
+        return f"Briefing for {self.launch.name}"
+
+
 class UserProfile(models.Model):
 
     user = models.OneToOneField(
