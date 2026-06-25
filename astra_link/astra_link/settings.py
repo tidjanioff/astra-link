@@ -145,14 +145,10 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
 
-SESSION_COOKIE_SECURE = os.environ.get(
-    'SESSION_COOKIE_SECURE',
-    'True' if not DEBUG else 'False'
-) == 'True'
-CSRF_COOKIE_SECURE = os.environ.get(
-    'CSRF_COOKIE_SECURE',
-    'True' if not DEBUG else 'False'
-) == 'True'
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
