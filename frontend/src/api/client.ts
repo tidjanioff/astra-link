@@ -5,10 +5,13 @@ const client = axios.create({
   withCredentials: true,
 })
 
+client.defaults.xsrfCookieName = 'csrftoken'
+client.defaults.xsrfHeaderName = 'X-CSRFToken'
+
 client.interceptors.request.use((config) => {
   const csrfToken = document.cookie
     .split('; ')
-    .find((row) => row.startsWith('csrftoken='))
+    .find((row) => row.toLowerCase().startsWith('csrftoken='))
     ?.split('=')[1]
 
   if (csrfToken) {
