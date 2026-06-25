@@ -3,5 +3,4 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "python manage.py migrate && gunicorn astra_link.wsgi --log-file -"
-healthcheckPath = "/api/launches/"
-healthcheckTimeout = 60
+
