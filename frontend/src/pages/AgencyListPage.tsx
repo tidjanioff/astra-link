@@ -36,7 +36,6 @@ function getSuccessRateColor(successRate: number | null) {
 
 function AgencyListPage() {
   const [agencies, setAgencies] = useState<AgencyStats[]>([])
-  const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hoveredProvider, setHoveredProvider] = useState<string | null>(null)
@@ -51,8 +50,7 @@ function AgencyListPage() {
       try {
         const data = await getAgencies()
         if (!ignore) {
-          setAgencies(data.results)
-          setTotalCount(data.count)
+          setAgencies(data)
         }
       } catch {
         if (!ignore) {
@@ -102,7 +100,7 @@ function AgencyListPage() {
             fontSize: '0.9rem',
           }}
         >
-          {totalCount.toLocaleString()} agencies tracked
+          {agencies.length.toLocaleString()} agencies
         </p>
       </header>
 

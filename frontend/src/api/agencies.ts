@@ -1,20 +1,8 @@
 import client from './client'
-import type {
-  AgencyStats,
-  Launch,
-  PaginatedResponse,
-  RocketStats,
-} from '../types'
+import type { AgencyStats, Launch, RocketStats } from '../types'
 
-export async function getAgencies(
-  page?: number,
-): Promise<PaginatedResponse<AgencyStats>> {
-  const response = await client.get<PaginatedResponse<AgencyStats>>(
-    '/agencies/',
-    {
-      params: { page },
-    },
-  )
+export async function getAgencies(): Promise<AgencyStats[]> {
+  const response = await client.get<AgencyStats[]>('/agencies/')
   return response.data
 }
 

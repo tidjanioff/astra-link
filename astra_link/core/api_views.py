@@ -101,6 +101,7 @@ class BriefingView(APIView):
 class AgencyListView(generics.ListAPIView):
     queryset = AgencyStats.objects.order_by("-total_launches")
     serializer_class = AgencyStatsSerializer
+    pagination_class = None
 
 
 class AgencyDetailView(generics.RetrieveAPIView):
