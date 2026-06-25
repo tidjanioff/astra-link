@@ -217,6 +217,8 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
+
     def post(self, request, *args, **kwargs):
         logout(request)
         return Response({})
