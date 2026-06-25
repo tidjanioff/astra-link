@@ -4,9 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,6 +23,11 @@ from .serializers import (
     RocketStatsSerializer,
 )
 from .utils import build_mission_briefing_snapshot, generate_mission_briefing
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return
 
 
 class LaunchListView(generics.ListAPIView):
@@ -164,8 +168,8 @@ class FollowedLaunchListView(generics.ListAPIView):
         return Response(serializer.data)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class FollowToggleView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -193,8 +197,8 @@ class FollowToggleView(APIView):
         return Response({"followed": created})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -218,8 +222,8 @@ class LogoutView(APIView):
         return Response({})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
