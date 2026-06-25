@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import { AuthProvider } from './context/AuthContext'
 import AgencyDetailPage from './pages/AgencyDetailPage'
@@ -27,6 +28,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
+        <Footer />
       </AuthProvider>
     </BrowserRouter>
   )
