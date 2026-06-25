@@ -16,17 +16,12 @@ const PAGE_SIZE = 12
 const monoFont =
   'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
 
-const pageStyle: CSSProperties = {
-  padding: '3rem 4rem',
-}
-
 const filterControlStyle: CSSProperties = {
   background: '#111111',
   color: 'var(--color-text-secondary)',
   fontSize: '0.8rem',
   padding: '0.5rem 0.75rem',
   border: '1px solid var(--color-border)',
-  marginLeft: '1rem',
   outline: 'none',
 }
 
@@ -202,7 +197,7 @@ function LaunchListPage() {
   }
 
   return (
-    <main style={pageStyle}>
+    <main className="page-container">
       <header>
         <div
           style={{
@@ -216,9 +211,8 @@ function LaunchListPage() {
           UPCOMING LAUNCHES
         </div>
         <h1
+          className="page-title"
           style={{
-            fontSize: '2.5rem',
-            fontWeight: 700,
             color: '#ffffff',
             margin: 0,
           }}
@@ -237,15 +231,15 @@ function LaunchListPage() {
       </header>
 
       <section
+        className="filter-bar"
         style={{
-          display: 'flex',
-          alignItems: 'center',
           marginTop: '2.5rem',
           paddingBottom: '1.5rem',
           borderBottom: '1px solid var(--color-border)',
         }}
       >
         <input
+          className="filter-search"
           type="search"
           placeholder="Search launches..."
           value={searchInput}
@@ -259,11 +253,11 @@ function LaunchListPage() {
             color: '#ffffff',
             fontSize: '0.85rem',
             padding: '0.5rem 0',
-            width: '280px',
             outline: 'none',
           }}
         />
         <select
+          className="filter-control"
           value={filters.provider}
           onChange={handleFilterChange('provider')}
           style={filterControlStyle}
@@ -276,6 +270,7 @@ function LaunchListPage() {
           ))}
         </select>
         <select
+          className="filter-control"
           value={filters.rocket_family}
           onChange={handleFilterChange('rocket_family')}
           style={filterControlStyle}
@@ -288,6 +283,7 @@ function LaunchListPage() {
           ))}
         </select>
         <select
+          className="filter-control"
           value={filters.orbit}
           onChange={handleFilterChange('orbit')}
           style={filterControlStyle}
@@ -334,16 +330,12 @@ function LaunchListPage() {
           !error &&
           launches.map((launch) => (
             <Link
+              className="launch-item"
               key={launch.id}
               to={`/launches/${launch.id}`}
               onMouseEnter={() => setHoveredLaunchId(launch.id)}
               onMouseLeave={() => setHoveredLaunchId(null)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '1.5rem 0',
-                cursor: 'pointer',
                 background:
                   hoveredLaunchId === launch.id
                     ? 'var(--color-surface)'
@@ -353,35 +345,24 @@ function LaunchListPage() {
             >
               {launch.image_url ? (
                 <img
+                  className="launch-item-image"
                   src={launch.image_url}
                   alt=""
-                  style={{
-                    width: '120px',
-                    height: '80px',
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                    borderRadius: '2px',
-                  }}
                 />
               ) : (
                 <div
+                  className="launch-item-image"
                   style={{
-                    width: '120px',
-                    height: '80px',
-                    flexShrink: 0,
-                    borderRadius: '2px',
                     background: '#1a1a1a',
                   }}
                 />
               )}
 
               <div
+                className="launch-item-content"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  marginLeft: '1.5rem',
-                  flex: 1,
-                  minWidth: 0,
                 }}
               >
                 <div
@@ -412,6 +393,7 @@ function LaunchListPage() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    flexWrap: 'wrap',
                     gap: '0.5rem',
                     marginTop: '0.5rem',
                     ...metaTextStyle,
@@ -438,10 +420,8 @@ function LaunchListPage() {
               </div>
 
               <div
+                className="launch-item-right"
                 style={{
-                  marginLeft: 'auto',
-                  textAlign: 'right',
-                  flexShrink: 0,
                 }}
               >
                 <span
@@ -486,7 +466,7 @@ function LaunchListPage() {
         >
           ← PREVIOUS
         </span>
-        <span style={paginationTextStyle}>
+        <span className="pagination-text" style={paginationTextStyle}>
           PAGE {currentPage} OF {totalPages}
         </span>
         <span
@@ -498,7 +478,9 @@ function LaunchListPage() {
             visibility: hasNextPage ? 'visible' : 'hidden',
             cursor: hasNextPage ? 'pointer' : 'default',
             color:
-              hoveredPager === 'next' ? '#ffffff' : paginationTextStyle.color,
+              hoveredPager === 'next'
+                ? '#ffffff'
+                : paginationTextStyle.color,
           }}
         >
           NEXT →

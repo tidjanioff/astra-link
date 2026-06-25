@@ -39,6 +39,7 @@ function RegisterPage() {
 
   return (
     <main
+      className="auth-page"
       style={{
         minHeight: '100vh',
         background: 'var(--color-bg)',

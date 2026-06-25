@@ -55,18 +55,13 @@ function getStatusColor(status: string | null) {
 function StatBlock({
   label,
   value,
-  first,
 }: {
   label: string
   value: string | number
-  first?: boolean
 }) {
   return (
     <div
-      style={{
-        padding: first ? '0 2rem 0 0' : '0 2rem',
-        borderLeft: first ? 'none' : '1px solid var(--color-border)',
-      }}
+      className="stat-item"
     >
       <span
         style={{
@@ -100,49 +95,34 @@ function LaunchRow({ launch }: { launch: Launch }) {
 
   return (
     <Link
+      className="launch-item"
       to={`/launches/${launch.id}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        borderBottom: '1px solid var(--color-border)',
-        padding: '1.5rem 0',
-        cursor: 'pointer',
         background: hovered ? 'var(--color-surface)' : 'transparent',
         transition: 'background 0.15s',
       }}
     >
       {launch.image_url ? (
         <img
+          className="launch-item-image"
           src={launch.image_url}
           alt=""
-          style={{
-            width: '120px',
-            height: '80px',
-            objectFit: 'cover',
-            flexShrink: 0,
-            borderRadius: '2px',
-          }}
         />
       ) : (
         <div
+          className="launch-item-image"
           style={{
-            width: '120px',
-            height: '80px',
-            flexShrink: 0,
-            borderRadius: '2px',
             background: '#1a1a1a',
           }}
         />
       )}
       <div
+        className="launch-item-content"
         style={{
           display: 'flex',
           flexDirection: 'column',
-          marginLeft: '1.5rem',
-          flex: 1,
-          minWidth: 0,
         }}
       >
         <div
@@ -172,6 +152,7 @@ function LaunchRow({ launch }: { launch: Launch }) {
           style={{
             display: 'flex',
             alignItems: 'center',
+            flexWrap: 'wrap',
             gap: '0.5rem',
             marginTop: '0.5rem',
             fontFamily: monoFont,
@@ -185,10 +166,8 @@ function LaunchRow({ launch }: { launch: Launch }) {
         </div>
       </div>
       <div
+        className="launch-item-right"
         style={{
-          marginLeft: 'auto',
-          textAlign: 'right',
-          flexShrink: 0,
           textTransform: 'uppercase',
           fontSize: '0.7rem',
           fontFamily: monoFont,
@@ -260,14 +239,19 @@ function AgencyDetailPage() {
 
   if (error || !agency) {
     return (
-      <main style={{ padding: '3rem 4rem', color: 'var(--color-danger)' }}>
+      <main
+        className="page-container"
+        style={{
+          color: 'var(--color-danger)',
+        }}
+      >
         {error ?? 'Agency not found.'}
       </main>
     )
   }
 
   return (
-    <main style={{ padding: '3rem 4rem' }}>
+    <main className="page-container">
       <Link
         to="/agencies"
         style={{
@@ -280,9 +264,8 @@ function AgencyDetailPage() {
         ← AGENCIES
       </Link>
       <h1
+        className="page-title"
         style={{
-          fontSize: '2.5rem',
-          fontWeight: 700,
           color: '#ffffff',
           margin: '1rem 0 0',
         }}
@@ -290,8 +273,16 @@ function AgencyDetailPage() {
         {agency.provider}
       </h1>
 
-      <section style={{ display: 'flex', marginTop: '2rem' }}>
-        <StatBlock label="TOTAL LAUNCHES" value={agency.total_launches} first />
+      <section
+        className="stats-row"
+        style={{
+          marginTop: '2rem',
+        }}
+      >
+        <StatBlock
+          label="TOTAL LAUNCHES"
+          value={agency.total_launches}
+        />
         <StatBlock
           label="SUCCESS RATE"
           value={agency.success_rate === null ? '—' : `${agency.success_rate}%`}

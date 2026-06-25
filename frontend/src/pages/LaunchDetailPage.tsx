@@ -37,7 +37,6 @@ const definitionValueStyle: CSSProperties = {
   fontFamily: monoFont,
   fontSize: '0.85rem',
   color: '#ffffff',
-  textAlign: 'right',
 }
 
 function getStatusColor(status: string | null) {
@@ -90,16 +89,12 @@ function DefinitionRow({
 }) {
   return (
     <div
+      className="def-row"
       style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        gap: '1.5rem',
-        padding: '0.75rem 0',
-        borderBottom: '1px solid var(--color-border)',
       }}
     >
-      <dt style={definitionLabelStyle}>{label}</dt>
-      <dd style={{ ...definitionValueStyle, margin: 0 }}>{value}</dd>
+      <dt className="def-label" style={definitionLabelStyle}>{label}</dt>
+      <dd className="def-value" style={{ ...definitionValueStyle, margin: 0 }}>{value}</dd>
     </div>
   )
 }
@@ -315,10 +310,10 @@ function LaunchDetailPage() {
           }}
         />
         <div
+          className="hero-copy"
           style={{
             position: 'absolute',
             bottom: '2rem',
-            left: '4rem',
           }}
         >
           <div
@@ -333,9 +328,8 @@ function LaunchDetailPage() {
             {launch.provider ?? 'UNKNOWN PROVIDER'}
           </div>
           <h1
+            className="page-title"
             style={{
-              fontSize: '2.5rem',
-              fontWeight: 700,
               color: '#ffffff',
               maxWidth: '800px',
               lineHeight: 1.2,
@@ -358,12 +352,9 @@ function LaunchDetailPage() {
         </div>
       </section>
 
-      <section style={{ padding: '3rem 4rem' }}>
+      <section className="page-container">
         <div
-          style={{
-            display: 'flex',
-            gap: '4rem',
-          }}
+          className="detail-columns"
         >
           <div style={{ flex: 2 }}>
             <section>

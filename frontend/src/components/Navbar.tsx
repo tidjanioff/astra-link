@@ -14,11 +14,29 @@ function Navbar() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [logoutHovered, setLogoutHovered] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const linkStyle = (path: string) => ({
     ...navLinkBaseStyle,
     color: location.pathname === path ? '#ffffff' : navLinkBaseStyle.color,
   })
+
+  const closeMenu = () => {
+    setMenuOpen(false)
+  }
+
+  const handleLogout = async () => {
+    await logout()
+    closeMenu()
+    navigate('/')
+  }
+
+  const overlayLinkStyle = {
+    color: '#ffffff',
+    fontSize: '1.2rem',
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+  } as const
 
   return (
     <nav
@@ -34,12 +52,12 @@ function Navbar() {
       }}
     >
       <div
+        className="navbar-inner"
         style={{
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 5rem',
         }}
       >
         <Link
@@ -54,11 +72,19 @@ function Navbar() {
           ASTRALINK
         </Link>
 
+        <button
+          type="button"
+          aria-label="Open navigation menu"
+          className="navbar-hamburger"
+          onClick={() => setMenuOpen(true)}
+        >
+          ☰
+        </button>
+
         <div
+          className="navbar-links-center"
           style={{
-            display: 'flex',
             alignItems: 'center',
-            gap: '2.5rem',
           }}
         >
           <Link to="/" style={linkStyle('/')}>
@@ -70,10 +96,9 @@ function Navbar() {
         </div>
 
         <div
+          className="navbar-links-right"
           style={{
-            display: 'flex',
             alignItems: 'center',
-            gap: '2.5rem',
           }}
         >
           <Link to="/my-launches" style={linkStyle('/my-launches')}>
@@ -82,8 +107,7 @@ function Navbar() {
           {user ? (
             <span
               onClick={async () => {
-                await logout()
-                navigate('/')
+                await handleLogout()
               }}
               onMouseEnter={() => setLogoutHovered(true)}
               onMouseLeave={() => setLogoutHovered(false)}
@@ -101,6 +125,38 @@ function Navbar() {
             </Link>
           )}
         </div>
+      </div>
+
+      <div className={`navbar-overlay ${menuOpen ? 'open' : ''}`}>
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          className="navbar-overlay-close"
+          onClick={closeMenu}
+        >
+          ×
+        </button>
+        <Link to="/" onClick={closeMenu} style={overlayLinkStyle}>
+          LAUNCHES
+        </Link>
+        <Link to="/agencies" onClick={closeMenu} style={overlayLinkStyle}>
+          AGENCIES
+        </Link>
+        <Link to="/my-launches" onClick={closeMenu} style={overlayLinkStyle}>
+          MY LAUNCHES
+        </Link>
+        {user ? (
+          <span
+            onClick={handleLogout}
+            style={{ ...overlayLinkStyle, cursor: 'pointer' }}
+          >
+            LOGOUT
+          </span>
+        ) : (
+          <Link to="/login" onClick={closeMenu} style={overlayLinkStyle}>
+            LOGIN
+          </Link>
+        )}
       </div>
     </nav>
   )

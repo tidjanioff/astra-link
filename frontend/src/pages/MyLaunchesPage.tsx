@@ -102,7 +102,7 @@ function MyLaunchesPage() {
   }
 
   return (
-    <main style={{ padding: '3rem 4rem' }}>
+    <main className="page-container">
       <header>
         <div
           style={{
@@ -116,9 +116,8 @@ function MyLaunchesPage() {
           MY LAUNCHES
         </div>
         <h1
+          className="page-title"
           style={{
-            fontSize: '2.5rem',
-            fontWeight: 700,
             color: '#ffffff',
             margin: 0,
           }}
@@ -179,16 +178,12 @@ function MyLaunchesPage() {
 
           return (
             <Link
+              className="launch-item"
               key={launch.id}
               to={`/launches/${launch.id}`}
               onMouseEnter={() => setHoveredLaunchId(launch.id)}
               onMouseLeave={() => setHoveredLaunchId(null)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '1.5rem 0',
-                cursor: 'pointer',
                 background:
                   hoveredLaunchId === launch.id
                     ? 'var(--color-surface)'
@@ -198,34 +193,23 @@ function MyLaunchesPage() {
             >
               {launch.image_url ? (
                 <img
+                  className="launch-item-image"
                   src={launch.image_url}
                   alt=""
-                  style={{
-                    width: '120px',
-                    height: '80px',
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                    borderRadius: '2px',
-                  }}
                 />
               ) : (
                 <div
+                  className="launch-item-image"
                   style={{
-                    width: '120px',
-                    height: '80px',
-                    flexShrink: 0,
-                    borderRadius: '2px',
                     background: '#1a1a1a',
                   }}
                 />
               )}
               <div
+                className="launch-item-content"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  marginLeft: '1.5rem',
-                  flex: 1,
-                  minWidth: 0,
                 }}
               >
                 <div
@@ -255,6 +239,7 @@ function MyLaunchesPage() {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    flexWrap: 'wrap',
                     gap: '0.5rem',
                     marginTop: '0.5rem',
                     fontFamily: monoFont,
@@ -282,10 +267,8 @@ function MyLaunchesPage() {
                 )}
               </div>
               <div
+                className="launch-item-right"
                 style={{
-                  marginLeft: 'auto',
-                  textAlign: 'right',
-                  flexShrink: 0,
                 }}
               >
                 <div

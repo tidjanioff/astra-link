@@ -8,10 +8,6 @@ import type { AgencyStats } from '../types'
 const monoFont =
   'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
 
-const pageStyle: CSSProperties = {
-  padding: '3rem 4rem',
-}
-
 const headerCellStyle: CSSProperties = {
   fontSize: '0.7rem',
   textTransform: 'uppercase',
@@ -77,7 +73,7 @@ function AgencyListPage() {
   }, [])
 
   return (
-    <main style={pageStyle}>
+    <main className="page-container">
       <header>
         <div
           style={{
@@ -91,9 +87,8 @@ function AgencyListPage() {
           SPACE AGENCIES
         </div>
         <h1
+          className="page-title"
           style={{
-            fontSize: '2.5rem',
-            fontWeight: 700,
             color: '#ffffff',
             margin: 0,
           }}
@@ -138,31 +133,26 @@ function AgencyListPage() {
           }}
         >
           <div
+            className="agency-row"
             style={{
-              display: 'flex',
-              padding: '0.75rem 0',
               ...headerCellStyle,
             }}
           >
-            <div style={{ flex: 3 }}>AGENCY</div>
-            <div style={{ flex: 1 }}>LAUNCHES</div>
-            <div style={{ flex: 1 }}>SUCCESS RATE</div>
-            <div style={{ flex: 2 }}>COMMON ORBIT</div>
-            <div style={{ flex: 2 }}>MISSION TYPE</div>
+            <div className="agency-col-name">AGENCY</div>
+            <div className="agency-col-launches">LAUNCHES</div>
+            <div className="agency-col-rate">SUCCESS RATE</div>
+            <div className="agency-col-orbit">COMMON ORBIT</div>
+            <div className="agency-col-mission">MISSION TYPE</div>
           </div>
 
           {agencies.map((agency) => (
             <Link
+              className="agency-row"
               key={agency.provider}
               to={`/agencies/${encodeURIComponent(agency.provider)}`}
               onMouseEnter={() => setHoveredProvider(agency.provider)}
               onMouseLeave={() => setHoveredProvider(null)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '1.25rem 0',
-                cursor: 'pointer',
                 background:
                   hoveredProvider === agency.provider
                     ? 'var(--color-surface)'
@@ -171,8 +161,8 @@ function AgencyListPage() {
               }}
             >
               <div
+                className="agency-col-name"
                 style={{
-                  flex: 3,
                   fontSize: '0.9rem',
                   fontWeight: 500,
                   color: '#ffffff',
@@ -180,22 +170,22 @@ function AgencyListPage() {
               >
                 {agency.provider}
               </div>
-              <div style={{ flex: 1, ...valueCellStyle }}>
+              <div className="agency-col-launches" style={valueCellStyle}>
                 {agency.total_launches}
               </div>
               <div
+                className="agency-col-rate"
                 style={{
-                  flex: 1,
                   ...valueCellStyle,
                   color: getSuccessRateColor(agency.success_rate),
                 }}
               >
                 {agency.success_rate === null ? '—' : `${agency.success_rate}%`}
               </div>
-              <div style={{ flex: 2, ...valueCellStyle }}>
+              <div className="agency-col-orbit" style={valueCellStyle}>
                 {agency.most_common_orbit ?? '—'}
               </div>
-              <div style={{ flex: 2, ...valueCellStyle }}>
+              <div className="agency-col-mission" style={valueCellStyle}>
                 {agency.most_common_mission_type ?? '—'}
               </div>
             </Link>
