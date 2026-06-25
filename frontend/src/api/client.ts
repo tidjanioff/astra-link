@@ -9,15 +9,18 @@ client.defaults.xsrfCookieName = 'csrftoken'
 client.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 client.interceptors.request.use((config) => {
-  const csrfToken = document.cookie
-    .split('; ')
-    .find((row) => row.toLowerCase().startsWith('csrftoken='))
-    ?.split('=')[1]
-
+  const cookies = document.cookie.split(';')
+  let csrfToken = null
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split('=')
+    if (name === 'csrftoken') {
+      csrfToken = value
+      break
+    }
+  }
   if (csrfToken) {
     config.headers['X-CSRFToken'] = csrfToken
   }
-
   return config
 })
 
